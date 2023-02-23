@@ -1,0 +1,353 @@
+openapi: 3.0.2
+info:
+  title: FormOne API
+  version: "1.0"
+servers:
+- description: test server
+  url: https://178.89.107.227
+- url: https://localhost
+paths:
+  /order/protected/opinion/{id}:
+    get:
+      description: Check that the form has already been filled out and sent
+      parameters:
+      - example: 1
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Form'
+          description: Need to check the body of the response
+        "401":
+          description: Access token is missing or invalid
+      security:
+      - bearerAuth: []
+      x-accepts: application/json
+    post:
+      description: Submit a new form
+      parameters:
+      - example: 1
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormOneDTO'
+        description: Users form with answers
+      responses:
+        "200":
+          description: OK. The form has been sent
+        "401":
+          description: Access token is missing or invalid
+        "409":
+          description: The user has already submitted the form
+      security:
+      - bearerAuth: []
+      x-contentType: application/json
+      x-accepts: application/json
+components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+  schemas:
+    FormOneDTO:
+      description: answers to questions
+      example:
+        nine: nine
+        six:
+          nine: nine
+          six: six
+          four: four
+          one: one
+          seven: seven
+          two: two
+          three: three
+          five: five
+          eight: eight
+        four: four
+        one:
+          four: four
+          one: one
+          two: two
+          three: three
+          five: true
+        seven: seven
+        fourOne: fourOne
+        ten: 6
+        two:
+          four: four
+          one: one
+          two: two
+          three: three
+          five: true
+        three: three
+        five: 0
+        eight:
+          nine: true
+          six: true
+          four: true
+          one: true
+          seven: true
+          two: true
+          three: true
+          five: true
+          eight: true
+      properties:
+        one:
+          $ref: '#/components/schemas/FiveAnswersOne'
+        two:
+          $ref: '#/components/schemas/FiveAnswersTwo'
+        three:
+          description: 3. Какие виды товаров Вы отправляете между странами ЕАЭС (Казахстан,
+            Россия, Беларусь, Киргизия, Армения)?
+          type: string
+        four:
+          description: 4. Требуется ли Вам дополнительные услуги по закупке товара
+            в странах ЕАЭС (Казахстан, Россия, Беларусь, Киргизия, Армения) и продаже
+            в Казахстане от казахстанского юр. лица?
+          type: string
+        fourOne:
+          description: 4.1. Укажите количество закупок и сумму товара для закупки
+            в месяц.
+          type: string
+        five:
+          description: 5. Насколько Вам нравится дизайн мобильного приложения SLQ
+            и сайта SLQ.KZ? По шкале от 1 до 10, где 1 – совершенно не нравится, 10
+            – всё идеально?
+          format: int32
+          type: integer
+        six:
+          $ref: '#/components/schemas/NineAnswersOne'
+        seven:
+          description: 7. Что необходимо добавить или убрать в мобильном приложения
+            SLQ или на сайте SLQ.KZ, чтобы повысить вероятность его использования
+            сервиса Вами?
+          type: string
+        eight:
+          $ref: '#/components/schemas/NineAnswersTwo'
+        nine:
+          description: 9. Чем Вам удобнее пользоваться для оформления заказа на доставку?
+          type: string
+        ten:
+          description: 10. Порекомендуете ли Вы наш сервис своим друзьям/знакомым/партнерам?
+            По шкале от 1 до 10, где 1 – буду молчать или даже отговаривать, 10 –
+            конечно, ведь я менеджер по продажам SLQ.
+          format: int32
+          type: integer
+      required:
+      - eight
+      - five
+      - four
+      - fourOne
+      - nine
+      - one
+      - seven
+      - six
+      - ten
+      - three
+      - two
+      type: object
+    FiveAnswersOne:
+      description: 1. Какое количество раз в месяц Вы делаете отправки между странами
+        ЕАЭС (Казахстан, Россия, Беларусь, Киргизия, Армения)?
+      example:
+        four: four
+        one: one
+        two: two
+        three: three
+        five: true
+      properties:
+        one:
+          description: Казахстан-Россия, Россия-Казахстан
+          type: string
+        two:
+          description: Казахстан-Киргизия, Киргизия-Казахстан
+          type: string
+        three:
+          description: Казахстан-Беларусь, Беларусь-Казахстан
+          type: string
+        four:
+          description: Казахстан-Армения, Армения-Казахстан
+          type: string
+        five:
+          description: Нету отправок по данным направлениям
+          type: boolean
+      required:
+      - five
+      - four
+      - one
+      - three
+      - two
+      type: object
+    FiveAnswersTwo:
+      description: 2. Какую сумму в месяц Вы тратите на логистику между странами ЕАЭС
+        (Казахстан, Россия, Беларусь, Киргизия, Армения)?
+      example:
+        four: four
+        one: one
+        two: two
+        three: three
+        five: true
+      properties:
+        one:
+          description: Казахстан-Россия, Россия-Казахстан
+          type: string
+        two:
+          description: Казахстан-Киргизия, Киргизия-Казахстан
+          type: string
+        three:
+          description: Казахстан-Беларусь, Беларусь-Казахстан
+          type: string
+        four:
+          description: Казахстан-Армения, Армения-Казахстан
+          type: string
+        five:
+          description: Нету отправок по данным направлениям
+          type: boolean
+      required:
+      - five
+      - four
+      - one
+      - three
+      - two
+      type: object
+    NineAnswersOne:
+      description: 6. Что мешает Вам оформить заказ на доставку в мобильном приложения
+        SLQ или на сайте SLQ.KZ?
+      example:
+        nine: nine
+        six: six
+        four: four
+        one: one
+        seven: seven
+        two: two
+        three: three
+        five: five
+        eight: eight
+      properties:
+        one:
+          description: Неудобный калькулятор (напишите, что именно неудобно)
+          type: string
+        two:
+          description: Непонятно, как выбрать вариант доставки
+          type: string
+        three:
+          description: Много заполнять (напишите, что именно заполнять много)
+          type: string
+        four:
+          description: Плохой поиск по населенному пункту (напишите, что именно не
+            устраивает в поиске)
+          type: string
+        five:
+          description: Нет выбора адреса по карте
+          type: string
+        six:
+          description: Непонятно, что такое платный вес
+          type: string
+        seven:
+          description: Непонятно, что такое объявленная ценность
+          type: string
+        eight:
+          description: Проблемы с оплатой (напишите, какие именно)
+          type: string
+        nine:
+          description: Не доверяю (напишите, что нужно, чтобы возникло доверие)
+          type: string
+      required:
+      - eight
+      - five
+      - four
+      - fourOne
+      - nine
+      - one
+      - seven
+      - six
+      - three
+      - two
+      type: object
+    NineAnswersTwo:
+      description: 8. Каким инструментом для обратной связи Вы пользуетесь/удобнее
+        пользоваться?
+      example:
+        nine: true
+        six: true
+        four: true
+        one: true
+        seven: true
+        two: true
+        three: true
+        five: true
+        eight: true
+      properties:
+        one:
+          description: «Живочат» на сайте
+          type: boolean
+        two:
+          description: Telegram
+          type: boolean
+        three:
+          description: Skype
+          type: boolean
+        four:
+          description: WhatsApp
+          type: boolean
+        five:
+          description: Электронная почта
+          type: boolean
+        six:
+          description: Телефон
+          type: boolean
+        seven:
+          description: Instagram
+          type: boolean
+        eight:
+          description: Youtube
+          type: boolean
+        nine:
+          description: Facebook
+          type: boolean
+      required:
+      - eight
+      - five
+      - four
+      - fourOne
+      - nine
+      - one
+      - seven
+      - six
+      - three
+      - two
+      type: object
+    Form:
+      description: Form filled y/n
+      example:
+        formFound: true
+      properties:
+        formFound:
+          description: true means that the form has already been filled out and submitted
+          type: boolean
+      required:
+      - formFound
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+
